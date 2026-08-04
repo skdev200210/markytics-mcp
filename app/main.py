@@ -5,7 +5,6 @@ from starlette.middleware.cors import CORSMiddleware  # type: ignore
 from starlette.routing import Mount
 
 from app.core.config import settings
-from app.core.logger import logger
 from app.mcp_server import mcp_http
 from app.middleware import _NormalizeMcpSlash
 

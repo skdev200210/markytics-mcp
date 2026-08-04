@@ -4,7 +4,7 @@ from app.core.config import settings
 import os
 import logging
 
-logger = logging.getLogger("call-server-starlette")
+logger = logging.getLogger("mcp-server")
 
 
 def configure_logging():

@@ -1,6 +1,5 @@
 from contextlib import asynccontextmanager
-from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from mcp.server.fastmcp import FastMCP #type: ignore
 from mcp.server.fastmcp.exceptions import ToolError #type: ignore
