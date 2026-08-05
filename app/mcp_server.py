@@ -67,7 +67,7 @@ async def create_agent(
         context_id = headers.get("x-context-id")   # lowercase key
         logger.info("Context ID received in the tool: %s", context_id)
 
-        payload = context_store.get(context_id)
+        payload = await context_store.get(context_id)
 
         logger.info("Received payload for agent creation: %s", payload)
 
