@@ -4,6 +4,8 @@ from typing import Any, Dict, List
 from mcp.server.fastmcp import FastMCP #type: ignore
 from mcp.server.fastmcp.exceptions import ToolError #type: ignore
 from mcp.server.transport_security import TransportSecuritySettings #type: ignore
+from mcp.server.fastmcp import Context
+from fastmcp.server.dependencies import get_http_headers
 
 from app.services.create_agent_service import _post
 from app.core.logger import logger
@@ -34,6 +36,7 @@ mcp = FastMCP(
 
 @mcp.tool()
 async def create_agent(
+    ctx: Context,
     start_message: str,
     end_message: str,
     instructions: str,
@@ -75,6 +78,10 @@ async def create_agent(
         dict: On success, {"message": "Agent created successfully", "agent_name": <agent_name>}. On failure, {"error": <details>}.
     """
     try:
+        headers = get_http_headers()
+        context_id = headers.get("x-context-id")   # lowercase key
+        logger.info("Context ID received in the tool: %s", context_id)
+
         logger.info("Received payload for agent creation: %s", payload)
 
         agent_master_payload = {
@@ -87,7 +94,7 @@ async def create_agent(
         logger.info("agent_master_payload: %s", agent_master_payload)
 
         agent_master_response = await _post(
-            endpoint=settings.product_v3_workflow_base_url + "/api/v1/agent-master",
+            endpoint_url=settings.product_v3_workflow_base_url + "/api/v1/agent-master",
             payload=agent_master_payload,
         )
 
@@ -99,7 +106,7 @@ async def create_agent(
             "client_id": payload.get("client_id"),
             "product_id": payload.get("product_id"),
             "channel_id": payload.get("channel_id"),
-            "parent_agent_id": 0,
+            "parent_agent_id": None,
             "input_file_id": payload.get("input_file_id"),
             "start_msg": start_message,
             "end_msg": end_message,
@@ -148,8 +155,10 @@ async def create_agent(
             "agent_name": payload.get("agent_name")
         }
     except ToolError as e:
+        logger.error("ToolError occurred: %s", str(e))
         return {"error": str(e)}
     except Exception as e: 
+        logger.error("Unexpected error occurred: %s", str(e))
         return {"error": f"Unexpected error: {str(e)}"}
 
 
