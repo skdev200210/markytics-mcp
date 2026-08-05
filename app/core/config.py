@@ -16,6 +16,13 @@ class Settings(BaseSettings):
     )
 
     product_v3_workflow_base_url: str = Field(description="Base URL for the product V3 workflow.")
+
+    redis_url: str = Field(
+        description=(
+            "Redis holding each turn's MCP context. The remote MCP server reads the same "
+            "keys, so both deployments must point at this instance."
+        ),
+    )
     
     logs_dir: str = Field(default="logs", description="Directory to write log files to.")
     log_level: str = Field(

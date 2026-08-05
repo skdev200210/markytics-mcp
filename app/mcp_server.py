@@ -10,6 +10,7 @@ from fastmcp.server.dependencies import get_http_headers
 from app.services.create_agent_service import _post
 from app.core.logger import logger
 from app.core.config import settings
+from app.services import context_store
 
 
 mcp = FastMCP(
@@ -43,7 +44,6 @@ async def create_agent(
     objective: str,
     rules: List[str],
     summary_prompt: str,
-    payload: Dict[str, Any],
 ):
     """
     Create a new Agent from a set of configurations.
@@ -58,21 +58,6 @@ async def create_agent(
         objective: The agent's primary objective/goal for the conversation.
         rules: List of rules/constraints the agent must follow during the conversation.
         summary_prompt: Prompt template used to generate a post-call/post-conversation summary.
-        payload: Agent configuration dict. Expected keys:
-            - agent_name (str): Display name for the agent.
-            - client_id (str/int): ID of the client this agent belongs to.
-            - template_id (str/int): ID of the template this agent is based on.
-            - channel_id (str/int): ID of the communication channel.
-            - product_id (str/int): ID of the product this agent is tied to.
-            - input_file_id (str/int, optional): ID of the input data file.
-            - languages_supported (List[str]): Language codes the agent supports.
-            - language_names (List[str]): Human-readable names matching languages_supported.
-            - llm_id / llm_name: LLM configuration for the agent.
-            - stt_id / stt_name: Speech-to-text configuration.
-            - tts_id / tts_name: Text-to-speech configuration.
-            - voice (str): Voice ID/name to use for TTS.
-            - expected_input_columns (List[str]): Column names expected in the input data file.
-            - expected_output_columns (List[str]): Column names to produce in the output/results.
 
     Returns:
         dict: On success, {"message": "Agent created successfully", "agent_name": <agent_name>}. On failure, {"error": <details>}.
@@ -81,6 +66,8 @@ async def create_agent(
         headers = get_http_headers()
         context_id = headers.get("x-context-id")   # lowercase key
         logger.info("Context ID received in the tool: %s", context_id)
+
+        payload = context_store.get(context_id)
 
         logger.info("Received payload for agent creation: %s", payload)
 
