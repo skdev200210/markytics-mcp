@@ -111,7 +111,7 @@ async def create_agent(
             "start_msg": start_message,
             "end_msg": end_message,
             "instructions": instructions,
-            "rules": rules,
+            "rules": "\n".join(rules),
             "objectives": objective,
             "summary_prompt": summary_prompt,
             "is_global_agent": False,
