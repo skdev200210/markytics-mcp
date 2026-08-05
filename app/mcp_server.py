@@ -139,13 +139,14 @@ async def create_agent(
             "is_start_template": True
         }
 
+        logger.info("Agent create payload: %s", agent_create_payload)
+
         agent_response = await _post(
             endpoint_url=settings.product_v3_workflow_base_url + "/api/v1/agents",
             payload=agent_create_payload
         )
 
         logger.info("Agent created successfully: %s", agent_response)
-        logger.info("Agent created successfully: %s", agent_create_payload)
 
         return {
             "message": "Agent created successfully", 
