@@ -87,7 +87,7 @@ async def create_agent(
         agent_master_payload = {
             "agent_name": payload.get("agent_name"),
             "client_id": payload.get("client_id"),
-            "template_id": payload.get("template_id"),
+            "product_id": payload.get("product_id"),
             "channel_id": payload.get("channel_id"),
         }
 
@@ -117,10 +117,7 @@ async def create_agent(
             "is_global_agent": False,
 
             "languages_supported": payload.get("languages_supported"),
-            "language_names": payload.get("language_names"),
-
-            "language_id": 0,
-            "language_name": "string",
+            "language_names": payload.get("languages"),
 
             "llm_id": payload.get("llm_id"),
             "stt_id": payload.get("stt_id"),
